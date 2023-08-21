@@ -1915,84 +1915,96 @@ function Library:SetWatermark(Text)
 end;
 
 function Library:Notify(Text, Time)
-    local MaxSize = Library:GetTextBounds(Text, Enum.Font.Code, 14);
+    -- Calculate the maximum text size
+    local MaxSize = Library:GetTextBounds(Text, Enum.Font.Code, 14)
 
+    -- Create the outer notification frame
     local NotifyOuter = Library:Create('Frame', {
-        BorderColor3 = Color3.new(0, 0, 0);
-        Position = UDim2.new(0, 100, 0, 10);
-        Size = UDim2.new(0, 0, 0, 20);
-        ClipsDescendants = true;
-        ZIndex = 100;
-        Parent = Library.NotificationArea;
-    });
+        BorderColor3 = Color3.new(0, 0, 0),
+        Position = UDim2.new(0, 100, 0, 10),
+        Size = UDim2.new(0, 0, 0, 20),
+        ClipsDescendants = true,
+        ZIndex = 100,
+        Parent = Library.NotificationArea
+    })
 
+    -- Create the inner notification frame
     local NotifyInner = Library:Create('Frame', {
-        BackgroundColor3 = Library.MainColor;
-        BorderColor3 = Library.OutlineColor;
-        BorderMode = Enum.BorderMode.Inset;
-        Size = UDim2.new(1, 0, 1, 0);
-        ZIndex = 101;
-        Parent = NotifyOuter;
-    });
+        BackgroundColor3 = Library.MainColor,
+        BorderColor3 = Library.OutlineColor,
+        BorderMode = Enum.BorderMode.Inset,
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 101,
+        Parent = NotifyOuter
+    })
 
+    -- Add inner frame to the registry
     Library:AddToRegistry(NotifyInner, {
-        BackgroundColor3 = 'MainColor';
-        BorderColor3 = 'OutlineColor';
-    }, true);
+        BackgroundColor3 = 'MainColor',
+        BorderColor3 = 'OutlineColor'
+    }, true)
 
+    -- Create the inner content frame
     local InnerFrame = Library:Create('Frame', {
-        BackgroundColor3 = Color3.new(1, 1, 1);
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 1, 0, 1);
-        Size = UDim2.new(1, -2, 1, -2);
-        ZIndex = 102;
-        Parent = NotifyInner;
-    });
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, 1, 0, 1),
+        Size = UDim2.new(1, -2, 1, -2),
+        ZIndex = 102,
+        Parent = NotifyInner
+    })
 
+    -- Create gradient background for the inner frame
     Library:Create('UIGradient', {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(52, 52, 52))
-        });
-        Rotation = -90;
-        Parent = InnerFrame;
-    });
+        }),
+        Rotation = -90,
+        Parent = InnerFrame
+    })
 
+    -- Create the notification label
     local NotifyLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 4, 0, 0);
-        Size = UDim2.new(1, -4, 1, 0);
-        Text = Text;
-        TextXAlignment = Enum.TextXAlignment.Left;
-        TextSize = 14;
-        ZIndex = 103;
-        Parent = InnerFrame;
-    });
+        Position = UDim2.new(0, 4, 0, 0),
+        Size = UDim2.new(1, -4, 1, 0),
+        Text = Text,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextSize = 14,
+        ZIndex = 103,
+        Parent = InnerFrame
+    })
 
+    -- Create the left color indicator
     local LeftColor = Library:Create('Frame', {
-        BackgroundColor3 = Library.AccentColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, -1, 0, -1);
-        Size = UDim2.new(0, 3, 1, 2);
-        ZIndex = 104;
-        Parent = NotifyOuter;
-    });
+        BackgroundColor3 = Library.AccentColor,
+        BorderSizePixel = 0,
+        Position = UDim2.new(0, -1, 0, -1),
+        Size = UDim2.new(0, 3, 1, 2),
+        ZIndex = 104,
+        Parent = NotifyOuter
+    })
 
+    -- Add left color indicator to the registry
     Library:AddToRegistry(LeftColor, {
-        BackgroundColor3 = 'AccentColor';
-    }, true);
+        BackgroundColor3 = 'AccentColor'
+    }, true)
 
-    NotifyOuter:TweenSize(UDim2.new(0, MaxSize + 8 + 4, 0, 20), 'Out', 'Quad', 0.4, true);
+    -- Animate the notification
+    NotifyOuter:TweenSize(UDim2.new(0, MaxSize + 8 + 4, 0, 20), 'Out', 'Quad', 0.4, true)
 
+    -- Schedule the notification to disappear after a given time (default: 5 seconds)
     task.spawn(function()
-        wait(5 or Time);
+        wait(Time or 5)  -- Use Time if provided, otherwise default to 5 seconds
 
-        NotifyOuter:TweenSize(UDim2.new(0, 0, 0, 20), 'Out', 'Quad', 0.4, true);
+        NotifyOuter:TweenSize(UDim2.new(0, 0, 0, 20), 'Out', 'Quad', 0.4, true)
 
-        wait(0.4);
+        wait(0.4)
 
-        NotifyOuter:Destroy();
-    end);
-end;
+        NotifyOuter:Destroy()
+    end)
+end
+
 
 function Library:CreateWindow(WindowTitle)
     local Window = {
