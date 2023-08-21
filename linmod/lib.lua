@@ -1915,10 +1915,8 @@ function Library:SetWatermark(Text)
 end;
 
 function Library:Notify(Text, Time)
-    -- Calculate the maximum text size
     local MaxSize = Library:GetTextBounds(Text, Enum.Font.Code, 14)
 
-    -- Create the outer notification frame
     local NotifyOuter = Library:Create('Frame', {
         BorderColor3 = Color3.new(0, 0, 0),
         Position = UDim2.new(0, 100, 0, 10),
@@ -1928,7 +1926,6 @@ function Library:Notify(Text, Time)
         Parent = Library.NotificationArea
     })
 
-    -- Create the inner notification frame
     local NotifyInner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor,
         BorderColor3 = Library.OutlineColor,
@@ -1938,13 +1935,11 @@ function Library:Notify(Text, Time)
         Parent = NotifyOuter
     })
 
-    -- Add inner frame to the registry
     Library:AddToRegistry(NotifyInner, {
         BackgroundColor3 = 'MainColor',
         BorderColor3 = 'OutlineColor'
     }, true)
 
-    -- Create the inner content frame
     local InnerFrame = Library:Create('Frame', {
         BackgroundColor3 = Color3.new(1, 1, 1),
         BorderSizePixel = 0,
@@ -1954,7 +1949,6 @@ function Library:Notify(Text, Time)
         Parent = NotifyInner
     })
 
-    -- Create gradient background for the inner frame
     Library:Create('UIGradient', {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(27, 27, 27)),
@@ -1964,7 +1958,6 @@ function Library:Notify(Text, Time)
         Parent = InnerFrame
     })
 
-    -- Create the notification label
     local NotifyLabel = Library:CreateLabel({
         Position = UDim2.new(0, 4, 0, 0),
         Size = UDim2.new(1, -4, 1, 0),
@@ -1975,7 +1968,6 @@ function Library:Notify(Text, Time)
         Parent = InnerFrame
     })
 
-    -- Create the left color indicator
     local LeftColor = Library:Create('Frame', {
         BackgroundColor3 = Library.AccentColor,
         BorderSizePixel = 0,
@@ -1985,22 +1977,15 @@ function Library:Notify(Text, Time)
         Parent = NotifyOuter
     })
 
-    -- Add left color indicator to the registry
     Library:AddToRegistry(LeftColor, {
         BackgroundColor3 = 'AccentColor'
     }, true)
 
-    -- Animate the notification
-    NotifyOuter:TweenSize(UDim2.new(0, MaxSize + 8 + 4, 0, 20), 'Out', 'Quad', 0.4, true)
-
-    -- Schedule the notification to disappear after a given time (default: 5 seconds)
+    NotifyOuter:TweenSize(UDim2.new(0, MaxSize + 8 + 4, 0, 20), 'Out', 'Quart', 0.4, true
     task.spawn(function()
-        wait(Time or 5)  -- Use Time if provided, otherwise default to 5 seconds
-
-        NotifyOuter:TweenSize(UDim2.new(0, 0, 0, 20), 'Out', 'Quad', 0.4, true)
-
+        wait(Time or 5) 
+        NotifyOuter:TweenSize(UDim2.new(0, 0, 0, 20), 'Out', 'Quart', 0.4, true)
         wait(0.4)
-
         NotifyOuter:Destroy()
     end)
 end
